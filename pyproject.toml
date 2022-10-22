@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "nonebot-plugin-random"
+version = "0.0.1"
+description = ""
+authors = ["jcjrobert <jcjrobbie@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/jcjrobert/nonebot-plugin-random"
+repository = "https://github.com/jcjrobert/nonebot-plugin-random"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+include = [
+    "LICENSE",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+nonebot2 = "^2.0.0-beta.4"
+nonebot-adapter-onebot = "^2.1.1"
+
+[tool.poetry.dev-dependencies]
+nb-cli = "^0.6.0"
+black = "^22.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
