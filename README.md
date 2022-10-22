@@ -6,28 +6,20 @@
 
 <div align="center">
 
-# nonebot-plugin-example
+# nonebot-plugin-random
 
-_✨ NoneBot 插件简单描述 ✨_
+_✨ Nonebot2 通用抽图/语音插件 ✨_
 
 
 <a href="./LICENSE">
-    <img src="https://img.shields.io/github/license/owner/nonebot-plugin-example.svg" alt="license">
+    <img src="https://img.shields.io/github/license/jcjrobert/nonebot-plugin-random.svg" alt="license">
 </a>
-<a href="https://pypi.python.org/pypi/nonebot-plugin-example">
-    <img src="https://img.shields.io/pypi/v/nonebot-plugin-example.svg" alt="pypi">
+<a href="https://pypi.python.org/pypi/nonebot-plugin-random">
+    <img src="https://img.shields.io/pypi/v/nonebot-plugin-random.svg" alt="pypi">
 </a>
 <img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="python">
 
 </div>
-
-这是一个 nonebot2 插件项目的模板库, 你可以直接使用本模板创建你的 nonebot2 插件项目的仓库
-
-模板库使用方法:
-1. 点击仓库中的 "Use this template" 按钮, 输入仓库名与描述, 点击 "  Create repository from template" 创建仓库
-2. 在创建好的新仓库中, 在 "Add file" 菜单中选择 "Create new file", 在新文件名处输入`LICENSE`, 此时在右侧会出现一个 "Choose a license template" 按钮, 点击此按钮选择开源协议模板, 然后在最下方提交新文件到主分支
-3. 全局替换`owner`为仓库所有者ID; 全局替换`nonebot-plugin-example`为插件名; 全局替换`nonebot_plugin_example`为包名; 修改 python 徽标中的版本为你插件的运行所需版本
-4. 修改 README 中的插件名和插件描述, 并在下方填充相应的内容
 
 ## 📖 介绍
 
@@ -39,7 +31,7 @@ _✨ NoneBot 插件简单描述 ✨_
 <summary>使用 nb-cli 安装</summary>
 在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
 
-    nb plugin install nonebot-plugin-example
+    nb plugin install nonebot-plugin-random
 
 </details>
 
@@ -50,22 +42,22 @@ _✨ NoneBot 插件简单描述 ✨_
 <details>
 <summary>pip</summary>
 
-    pip install nonebot-plugin-example
+    pip install nonebot-plugin-random
 </details>
 <details>
 <summary>pdm</summary>
 
-    pdm add nonebot-plugin-example
+    pdm add nonebot-plugin-random
 </details>
 <details>
 <summary>poetry</summary>
 
-    poetry add nonebot-plugin-example
+    poetry add nonebot-plugin-random
 </details>
 <details>
 <summary>conda</summary>
 
-    conda install nonebot-plugin-example
+    conda install nonebot-plugin-random
 </details>
 
 打开 nonebot2 项目的 `bot.py` 文件, 在其中写入
@@ -78,7 +70,7 @@ _✨ NoneBot 插件简单描述 ✨_
 <summary>从 github 安装</summary>
 在 nonebot2 项目的插件目录下, 打开命令行, 输入以下命令克隆此储存库
 
-    git clone https://github.com/owner/nonebot-plugin-example.git
+    git clone https://github.com/jcjrobert/nonebot-plugin-random.git
 
 打开 nonebot2 项目的 `bot.py` 文件, 在其中写入
 
