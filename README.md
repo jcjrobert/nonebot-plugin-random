@@ -99,7 +99,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 | 配置项 | 必填 | 默认值 | 说明 |
 |:-----:|:----:|:----:|:----:|
-| "draw_output" | 否 | "image" | 抽取输出类型，有"text"/"image"/"record" |
+| "draw_output" | 否 | "image" | 抽取输出类型，有"image"/"record" |
 | "draw_mode" | 否 | "direct" | 抽取方式，"direct"表示直接从当前文件夹抽取，"indirect"表示随机从当前文件夹抽取一个文件夹然后从该文件夹抽取 |
 | "message_type" | 否 | "command" | 命令响应类型，"command"即on_command，"keyword"即on_keyword |
 | "message" | 否 | ["随机`当前文件夹文件名`"] | 自定义命令，必须是列表，若"message_type"不为"command"则只取第一项 |
