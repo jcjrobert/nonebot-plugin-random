@@ -65,7 +65,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 打开 nonebot2 项目的 `bot.py` 文件, 在其中写入
 
-    nonebot.load_plugin('nonebot_plugin_example')
+    nonebot.load_plugin('nonebot_plugin_random')
 
 </details>
 
@@ -77,7 +77,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 打开 nonebot2 项目的 `bot.py` 文件, 在其中写入
 
-    nonebot.load_plugin('src.plugins.nonebot_plugin_example')
+    nonebot.load_plugin('src.plugins.nonebot_plugin_random')
 
 </details>
 
