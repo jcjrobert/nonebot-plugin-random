@@ -6,7 +6,7 @@ import traceback
 from nonebot.matcher import Matcher
 from nonebot.typing import T_Handler
 from nonebot import logger
-from nonebot import on_command, on_keyword
+from nonebot import on_command, on_keyword, on_regex
 from nonebot.adapters.onebot.v11 import (
     Bot,
     Message,
@@ -139,6 +139,26 @@ def create_matchers():
             elif message_type == "keyword":
                 COMMANDS.append(f"关键词含有{message[0]}{' 并@我' if is_tome else ''}")
                 on_keyword(
+                    message[0],
+                    block=True,
+                    priority=12,
+                    rule=check_tome(is_tome)
+                ).append_handler(
+                    handler(
+                        dir_name=dir_name,
+                        draw_output=draw_output,
+                        draw_mode=draw_mode,
+                        output_prefix=output_prefix,
+                        output_suffix=output_suffix,
+                        is_at_sender=is_at_sender
+                    )
+                )
+            elif message_type == "regex":
+                if len(message) <= 1:
+                    logger.error(f"/{dir_name}使用正则匹配时应保证message有两项，第一项是正则表达式，第二项是匹配表达式的命令（用于命令展示）")
+                    continue
+                COMMANDS.append(f"{'@我 + ' if is_tome else ''}{message[1]}")
+                on_regex(
                     message[0],
                     block=True,
                     priority=12,

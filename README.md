@@ -101,8 +101,8 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 |:-----:|:----:|:----:|:----:|
 | "draw_output" | 否 | "image" | 抽取输出类型，有"image"/"record" |
 | "draw_mode" | 否 | "direct" | 抽取方式，"direct"表示直接从当前文件夹抽取，"indirect"表示随机从当前文件夹抽取一个文件夹然后从该文件夹抽取 |
-| "message_type" | 否 | "command" | 命令响应类型，"command"即on_command，"keyword"即on_keyword |
-| "message" | 否 | ["随机`当前文件夹文件名`"] | 自定义命令，必须是列表，若"message_type"不为"command"则只取第一项 |
+| "message_type" | 否 | "command" | 命令响应类型，"command"即on_command，"keyword"即on_keyword, "regex"即on_regex |
+| "message" | 否 | ["随机`当前文件夹文件名`"] | 自定义命令，必须是列表，若"message_type"为"keyword"时只取第一项，为"regex"时必须为两项，第一项是正则表达式，第二项是匹配表达式的命令 |
 | "is_tome" | 否 | false | 使用抽取命令时是否需要at机器人 |
 | "output_prefix" | 否 | "" | 输出前缀，"draw_output"为"record"下该配置无效 |
 | "output_suffix" | 否 | "" | 输出后缀，"draw_output"为"record"下该配置无效 |
@@ -110,10 +110,10 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 ## 📝 TODO LIST
 
-- 支持正则（主要是不知道怎么整合到命令里）
 - 对随机命令进行开关管理
 - 支持文本抽取
 - 菜单生成
+- ~~优化代码结构（先保证能跑）~~
 
 ## 📝 更新日志
 
@@ -128,6 +128,10 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 - 修复未配置"message"时不能正常使用随机命令的bug
 - 支持输出前后缀配置和at发送者
+
+### 0.0.3
+
+- 支持正则命令匹配
 
 </details>
 
