@@ -18,6 +18,9 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
     <img src="https://img.shields.io/pypi/v/nonebot-plugin-random.svg" alt="pypi">
 </a>
 <img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="python">
+<a href="https://jq.qq.com/?_wv=1027&k=x4krZXBW">
+    <img src="https://img.shields.io/badge/QQ%E7%BE%A4-816538892-orange" alt="qq group">
+</a>
 
 </div>
 
@@ -147,4 +150,4 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 ## 其他
 
-capoo资源请自行网上查找（（（
+capoo资源欢迎加入交流群获取
