@@ -4,7 +4,8 @@ import json
 import traceback
 
 from nonebot.matcher import Matcher
-from nonebot.typing import T_Handler
+from nonebot.typing import T_Handler, T_State
+from nonebot.params import _command_arg
 from nonebot import logger
 from nonebot import on_command, on_keyword, on_regex
 from nonebot.adapters.onebot.v11 import (
@@ -48,11 +49,13 @@ def create_matchers():
     def handler(
         dir_name: str, 
         config: RandomDetailConfig,
+        is_specify: bool = False
     ) -> T_Handler:
         async def handle(
             matcher: Matcher, 
             bot: Bot, 
-            event: GroupMessageEvent
+            event: GroupMessageEvent,
+            state: T_State,
         ):
             try:
                 files = []
@@ -65,6 +68,13 @@ def create_matchers():
                             dirs.append(i)
                     dirs.pop(0)
                 get_file = random.choice(files)
+                if is_specify:
+                    arg = str(_command_arg(state))
+                    if arg:
+                        for file in files:
+                            if file.name.startswith(arg):
+                                get_file = file
+                                break
             except IndexError:
                 traceback.print_exc()
                 await matcher.finish(message=f"当前文件夹/{dir_name}下没有文件，请放置任意文件并配置好后再使用命令")
@@ -109,7 +119,8 @@ def create_matchers():
                 ).append_handler(
                     handler(
                         dir_name=dir_name,
-                        config=config
+                        config=config,
+                        is_specify=True
                     )
                 )
             elif config.message_type == "keyword":
