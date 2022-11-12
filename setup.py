@@ -21,6 +21,6 @@ with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
         include_package_data=True,
         platforms="any",
         install_requires=[
-            'nonebot2>=2.0.0-beta.4', 'nonebot-adapter-onebot>=2.0.0-beta.4'
+            'nonebot2>=2.0.0-beta.4', 'nonebot-adapter-onebot>=2.0.0-beta.4', 'httpx>=0.19.0', 
         ]
     )

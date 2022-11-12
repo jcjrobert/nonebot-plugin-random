@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import List
 
 DRAW_OUTPUT_TYPES = ["text", "image", "record"]
