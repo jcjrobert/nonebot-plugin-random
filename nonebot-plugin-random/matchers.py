@@ -1,6 +1,9 @@
-from pathlib import Path
 import random
 import json
+import shlex
+import imghdr
+from datetime import datetime
+from pathlib import Path
 import traceback
 
 from nonebot.matcher import Matcher
@@ -18,6 +21,7 @@ from nonebot.adapters.onebot.v11 import (
 from .utils import *
 from .depends import *
 from .models import *
+from .download import *
 
 data_path = Path() / "data" / "random"
 COMMANDS = []
@@ -45,6 +49,21 @@ async def bot_send(
             message=MessageSegment.record(file=f"file:///{path.resolve()}")
         )
 
+def get_files(
+    dir_name: str,
+    type: str,
+):
+    files = []
+    dirs = [data_path.joinpath(dir_name)]
+    while dirs:
+        for i in dirs[0].iterdir():
+            if is_file(type, i):
+                files.append(i)
+            elif i.is_dir():
+                dirs.append(i)
+        dirs.pop(0)
+    return files
+
 def create_matchers():
     def handler(
         dir_name: str, 
@@ -58,7 +77,7 @@ def create_matchers():
             state: T_State,
         ):
             try:
-                files = []
+                files = get_files(dir_name, config.draw_output)
                 dirs = [data_path.joinpath(dir_name)]
                 while dirs:
                     for i in dirs[0].iterdir():
@@ -93,6 +112,66 @@ def create_matchers():
 
         return handle
 
+    def insert_image_handler(
+        dir_name: str,
+        commands: List[str],
+    ) -> T_Handler:
+        async def handle(
+            bot: Bot, 
+            event: GroupMessageEvent,
+        ):
+            images: List[bytes] = []
+            images_name: List[str] = []
+
+            success: int = 0
+            fail: int = 0
+
+            if event.reply:
+                for img in event.reply.message["image"]:
+                    try:
+                        img = await download_url(str(img.data.get("url", "")))
+                        success += 1
+                    except:
+                        fail += 1
+                    images.append(img)
+
+            msg: Message = event.dict()["message"]
+            for msg_seg in msg:
+                if msg_seg.type == "image":
+                    try:
+                        img = await download_url(str(msg_seg.data.get("url", "")))
+                        success += 1
+                    except:
+                        fail += 1
+                    images.append(img)
+                elif msg_seg.type == "text":
+                    raw_text = str(msg_seg)
+                    for command in commands:
+                        raw_text = raw_text.replace(command, "")
+                    try:
+                        texts = shlex.split(raw_text)
+                    except:
+                        texts = raw_text.split()
+                    images_name += texts
+            
+            base = 0
+            while len(images_name) < len(images):
+                images_name.append(str(int(datetime.now().timestamp())+base))
+                base += 1
+            images_name = images_name[:len(images)]
+            images_name = [f"{img_name}.{imghdr.what(None, h=images[i])}" for i,img_name in enumerate(images_name)]
+
+            path = data_path.joinpath(dir_name)
+            for i,img in enumerate(images):
+                img_path = path / images_name[i]
+                with img_path.open("wb+") as f:
+                    f.write(img)
+
+            tosend = f"添加完成，成功{success}张，失败{fail}张，可以直接用于抽取"
+            await bot.send(event=event,message=tosend,at_sender=True)
+
+        return handle
+
     if not data_path.exists():
         data_path.mkdir(parents=True, exist_ok=True)
     for dir in data_path.iterdir():
@@ -123,6 +202,19 @@ def create_matchers():
                         is_specify=True
                     )
                 )
+                if config.draw_output == "image":
+                    on_command(
+                        config.insert_message[0],
+                        aliases=set(config.insert_message[1:]),
+                        block=True,
+                        priority=12,
+                        rule=check_tome(config.is_tome)
+                    ).append_handler(
+                        insert_image_handler(
+                            dir_name=dir_name,
+                            commands=config.insert_message
+                        )
+                    )
             elif config.message_type == "keyword":
                 COMMANDS.append(f"关键词含有{config.message[0]}{' 并@我' if config.is_tome else ''}")
                 on_keyword(

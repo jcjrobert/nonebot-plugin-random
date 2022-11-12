@@ -1,7 +1,7 @@
 from pathlib import Path
 
 def is_image_file(path:Path) -> bool:
-    return path.suffix in [".gif",".png",".jpg"]
+    return path.suffix in [".gif",".png",".jpg",".jpeg"]
 
 def is_record_file(path:Path) -> bool:
     return path.suffix in [".mp3",".wav",".ogg"]
