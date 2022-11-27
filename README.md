@@ -94,7 +94,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 之后重启，使用命令 `随机capoo` 即可
 
-可以在群里动态添加图片，使用命令 `添加随机capoo` + 图片 + 图片名（可选） 即可，可以回复添加，目前任何人都能添加，后面会加上权限管理
+可以在群里动态添加图片，使用命令 `添加随机capoo` + 图片 + 图片名（可选） 即可，可以回复添加，仅管理员可以添加
 
 目前不能动态添加文件夹，需要手动添加并重启，这点请注意
 
@@ -102,7 +102,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 如果你有自定义命令的需求，你可以在当前文件夹，以随机capoo为例
 
-即`data/random/capoo`下添加config.json文件，然后按照下表进行配置并重启
+即`data/random/capoo`下添加config.json（UTF-8编码）文件，然后按照下表进行配置并重启
 
 | 配置项 | 必填 | 默认值 | 说明 |
 |:-----:|:----:|:----:|:----:|
@@ -114,6 +114,8 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 | "output_prefix" | 否 | "" | 输出前缀，"draw_output"为"record"下该配置无效 |
 | "output_suffix" | 否 | "" | 输出后缀，"draw_output"为"record"下该配置无效 |
 | "is_at_sender" | 否 | false | 机器人发消息时是否需要at发送者，"draw_output"为"record"下该配置无效 |
+
+如果想在输出前后缀出现文件名，请用{filestem}代表文件名，{filename}代表带后缀的文件名
 
 ### 指令表
 
@@ -146,6 +148,12 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 <details>
 <summary>展开/收起</summary>
+
+### 0.0.7
+
+- 规定读取config.json文件必须为UTF-8编码
+- 输出前后缀支持文件名
+- 添加图片仅管理员可以操作
 
 ### 0.0.6
 
@@ -182,3 +190,15 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 ## 其他
 
 capoo资源欢迎加入交流群获取，日后可能会开放远程下载
+
+## 📄 开源许可
+
+本项目使用[MIT](./LICENSE)许可证开源
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.

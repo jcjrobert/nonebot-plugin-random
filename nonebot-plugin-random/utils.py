@@ -11,3 +11,9 @@ def is_file(type:str,path:Path) -> bool:
         return is_image_file(path)
     elif type == "record":
         return is_record_file(path)
+    else:
+        return False
+
+def replace_message(msg:str,path:Path) -> str:
+    return msg.replace("{filename}",path.name) \
+            .replace("{filestem}",path.stem)

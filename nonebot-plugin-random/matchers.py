@@ -17,6 +17,11 @@ from nonebot.adapters.onebot.v11 import (
     MessageSegment,
     GroupMessageEvent
 )
+from nonebot.permission import SUPERUSER
+from nonebot.adapters.onebot.v11.permission import (
+    GROUP_ADMIN,
+    GROUP_OWNER,
+)
 
 from .utils import *
 from .depends import *
@@ -25,6 +30,7 @@ from .download import *
 
 data_path = Path() / "data" / "random"
 COMMANDS = []
+PERM_EDIT = GROUP_OWNER | GROUP_ADMIN | SUPERUSER
 
 async def bot_send(
     path:Path, 
@@ -33,8 +39,10 @@ async def bot_send(
     event:GroupMessageEvent,
     output_prefix:str,
     output_suffix:str,
-    is_at_sender:bool
+    is_at_sender:bool,
 ):
+    output_prefix = replace_message(output_prefix,path)
+    output_suffix = replace_message(output_suffix,path)
     if type == "image":
         await bot.send(
             event=event,
@@ -68,7 +76,7 @@ def create_matchers():
     def handler(
         dir_name: str, 
         config: RandomDetailConfig,
-        is_specify: bool = False
+        is_specify: bool = False,
     ) -> T_Handler:
         async def handle(
             matcher: Matcher, 
@@ -78,14 +86,6 @@ def create_matchers():
         ):
             try:
                 files = get_files(dir_name, config.draw_output)
-                dirs = [data_path.joinpath(dir_name)]
-                while dirs:
-                    for i in dirs[0].iterdir():
-                        if is_file(config.draw_output, i):
-                            files.append(i)
-                        elif i.is_dir():
-                            dirs.append(i)
-                    dirs.pop(0)
                 get_file = random.choice(files)
                 if is_specify:
                     arg = str(_command_arg(state))
@@ -107,7 +107,7 @@ def create_matchers():
                 event=event,
                 output_prefix=config.output_prefix,
                 output_suffix=config.output_suffix,
-                is_at_sender=config.is_at_sender
+                is_at_sender=config.is_at_sender,
             )
 
         return handle
@@ -181,7 +181,7 @@ def create_matchers():
             config_dict = {}
             if config_path.exists():
                 try:
-                    with config_path.open("r") as f:
+                    with config_path.open("r",encoding="UTF-8") as f:
                         config_dict = json.loads(f.read())
                 except:
                     traceback.print_exc()
@@ -194,12 +194,12 @@ def create_matchers():
                     aliases=set(config.message[1:]),
                     block=True,
                     priority=12,
-                    rule=check_tome(config.is_tome)
+                    rule=check_tome(config.is_tome),
                 ).append_handler(
                     handler(
                         dir_name=dir_name,
                         config=config,
-                        is_specify=True
+                        is_specify=True,
                     )
                 )
                 if config.draw_output == "image":
@@ -208,11 +208,12 @@ def create_matchers():
                         aliases=set(config.insert_message[1:]),
                         block=True,
                         priority=12,
-                        rule=check_tome(config.is_tome)
+                        rule=check_tome(config.is_tome),
+                        permission=PERM_EDIT,
                     ).append_handler(
                         insert_image_handler(
                             dir_name=dir_name,
-                            commands=config.insert_message
+                            commands=config.insert_message,
                         )
                     )
             elif config.message_type == "keyword":
@@ -221,11 +222,11 @@ def create_matchers():
                     config.message[0],
                     block=True,
                     priority=12,
-                    rule=check_tome(config.is_tome)
+                    rule=check_tome(config.is_tome),
                 ).append_handler(
                     handler(
                         dir_name=dir_name,
-                        config=config
+                        config=config,
                     )
                 )
             elif config.message_type == "regex":
@@ -237,11 +238,11 @@ def create_matchers():
                     config.message[0],
                     block=True,
                     priority=12,
-                    rule=check_tome(config.is_tome)
+                    rule=check_tome(config.is_tome),
                 ).append_handler(
                     handler(
                         dir_name=dir_name,
-                        config=config
+                        config=config,
                     )
                 )
 
