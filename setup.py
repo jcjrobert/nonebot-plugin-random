@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
     long_description = f.read()
     setuptools.setup(
         name='nonebot-plugin-random',
-        version='0.0.6',
+        version='0.0.7',
         author='jcjrobert',
         author_email='jcjrobbie@gmail.com',
         keywords=["pip", "nonebot2", "nonebot", "random", "抽图"],
