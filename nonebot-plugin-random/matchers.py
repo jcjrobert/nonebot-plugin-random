@@ -129,21 +129,21 @@ def create_matchers():
             if event.reply:
                 for img in event.reply.message["image"]:
                     try:
-                        img = await download_url(str(img.data.get("url", "")))
+                        _img = await download_url(str(img.data.get("url", "")))
                         success += 1
+                        images.append(_img)
                     except:
                         fail += 1
-                    images.append(img)
 
             msg: Message = event.dict()["message"]
             for msg_seg in msg:
                 if msg_seg.type == "image":
                     try:
-                        img = await download_url(str(msg_seg.data.get("url", "")))
+                        _img = await download_url(str(msg_seg.data.get("url", "")))
                         success += 1
+                        images.append(_img)
                     except:
                         fail += 1
-                    images.append(img)
                 elif msg_seg.type == "text":
                     raw_text = str(msg_seg)
                     for command in commands:
