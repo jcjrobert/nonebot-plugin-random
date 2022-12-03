@@ -110,7 +110,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 | "message_type" | 否 | "command" | 命令响应类型，"command"即on_command，"keyword"即on_keyword, "regex"即on_regex |
 | "message" | 否 | ["随机`当前文件夹文件名`"] | 自定义命令，必须是列表，若"message_type"为"keyword"时只取第一项，为"regex"时必须为两项，第一项是正则表达式，第二项是匹配表达式的命令 |
 | "insert_message" | 否 | ["添加随机`当前文件夹文件名`"] | 自定义添加图片命令，必须是列表，仅"message_type"为"command"且"message_type"为"image"时有效 |
-| "insert_message" | 否 | ["删除随机`当前文件夹文件名`"] | 自定义删除图片命令，必须是列表，仅"message_type"为"command"且"message_type"为"image"时有效 |
+| "delete_message" | 否 | ["删除随机`当前文件夹文件名`"] | 自定义删除图片命令，必须是列表，仅"message_type"为"command"且"message_type"为"image"时有效 |
 | "is_tome" | 否 | false | 使用抽取命令时是否需要at机器人 |
 | "output_prefix" | 否 | "" | 输出前缀，"draw_output"为"record"下该配置无效 |
 | "output_suffix" | 否 | "" | 输出后缀，"draw_output"为"record"下该配置无效 |
