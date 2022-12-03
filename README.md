@@ -110,6 +110,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 | "message_type" | 否 | "command" | 命令响应类型，"command"即on_command，"keyword"即on_keyword, "regex"即on_regex |
 | "message" | 否 | ["随机`当前文件夹文件名`"] | 自定义命令，必须是列表，若"message_type"为"keyword"时只取第一项，为"regex"时必须为两项，第一项是正则表达式，第二项是匹配表达式的命令 |
 | "insert_message" | 否 | ["添加随机`当前文件夹文件名`"] | 自定义添加图片命令，必须是列表，仅"message_type"为"command"且"message_type"为"image"时有效 |
+| "insert_message" | 否 | ["删除随机`当前文件夹文件名`"] | 自定义删除图片命令，必须是列表，仅"message_type"为"command"且"message_type"为"image"时有效 |
 | "is_tome" | 否 | false | 使用抽取命令时是否需要at机器人 |
 | "output_prefix" | 否 | "" | 输出前缀，"draw_output"为"record"下该配置无效 |
 | "output_suffix" | 否 | "" | 输出后缀，"draw_output"为"record"下该配置无效 |
@@ -124,6 +125,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 | 随机XX | 指令可见上述配置|
 | 随机XX + 文件名 | 仅在"message_type"为"command"时生效，指定文件名字（搜索第一个开头为指定名称的文件，可包括后缀） |
 | 添加随机XX + 图片名 | 仅在"message_type"为"command"且"message_type"为"image"时生效，添加指令可自定义，可添加数张图片，空格隔开可以分别对图片命名，可以回复添加，图片名默认为当前时间的时间戳+自动判断图片的后缀 |
+| 删除随机XX | 仅在"message_type"为"command"且"message_type"为"image"时生效，删除指令可自定义，可删除数张图片，可以回复删除 |
 
 目前去除command前缀的手段非常暴力，直接遍历command并依次进行replace，进行自定义命令时需额外注意这点，如果有完美的解决方案欢迎提出issue或PR
 
@@ -149,6 +151,10 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 <details>
 <summary>展开/收起</summary>
+
+### 0.0.8
+
+- 支持动态删除图片（仅command）
 
 ### 0.0.7
 

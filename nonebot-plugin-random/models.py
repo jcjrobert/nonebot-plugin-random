@@ -11,6 +11,7 @@ class RandomDetailConfig:
     message_type: str
     message: List[str]
     insert_message: List[str]
+    delete_message: List[str]
     is_tome: bool
     output_prefix: str
     output_suffix: str
@@ -33,6 +34,10 @@ class RandomDetailConfig:
             self.insert_message = config_dict.get("insert_message")
             if not is_list_str(self.insert_message):
                 self.insert_message = [f"添加{msg}" for msg in self.message]
+
+            self.delete_message = config_dict.get("delete_message")
+            if not is_list_str(self.delete_message):
+                self.delete_message = [f"删除{msg}" for msg in self.message]
 
         self.is_tome = bool(config_dict.get("is_tome"))
 

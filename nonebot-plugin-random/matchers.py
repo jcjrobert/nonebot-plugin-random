@@ -2,6 +2,7 @@ import random
 import json
 import shlex
 import imghdr
+import hashlib
 from datetime import datetime
 from pathlib import Path
 import traceback
@@ -172,6 +173,52 @@ def create_matchers():
 
         return handle
 
+    def delete_image_handler(
+        dir_name: str
+    ) -> T_Handler:
+        async def handle(
+            bot: Bot, 
+            event: GroupMessageEvent,
+        ):
+            images: List[bytes] = []
+            imgs_hash: List[str] = []
+
+            """
+            获取图片
+            """
+            if event.reply:
+                for img in event.reply.message["image"]:
+                    try:
+                        _img = await download_url(str(img.data.get("url", "")))
+                        images.append(_img)
+                    except:
+                        traceback.print_exc()
+                        logger.error("删除图片读取失败")
+
+            msg: Message = event.dict()["message"]
+            for msg_seg in msg:
+                if msg_seg.type == "image":
+                    try:
+                        _img = await download_url(str(msg_seg.data.get("url", "")))
+                        images.append(_img)
+                    except:
+                        traceback.print_exc()
+                        logger.error("删除图片读取失败")
+            imgs_hash = [hashlib.md5(image).hexdigest() for image in images]
+
+            files = get_files(dir_name, "image")  
+
+            remove_file = 0
+            for f in files:
+                f_hash = hashlib.md5(f.read_bytes()).hexdigest()
+                if f_hash in imgs_hash:
+                    f.unlink()
+                    remove_file += 1
+            
+            await bot.send(event=event,message=f"删除图片成功，一共删除了{remove_file}张图片",at_sender=True)
+
+        return handle
+
     if not data_path.exists():
         data_path.mkdir(parents=True, exist_ok=True)
     for dir in data_path.iterdir():
@@ -214,6 +261,18 @@ def create_matchers():
                         insert_image_handler(
                             dir_name=dir_name,
                             commands=config.insert_message,
+                        )
+                    )
+                    on_command(
+                        config.delete_message[0],
+                        aliases=set(config.delete_message[1:]),
+                        block=True,
+                        priority=12,
+                        rule=check_tome(config.is_tome),
+                        permission=PERM_EDIT,
+                    ).append_handler(
+                        delete_image_handler(
+                            dir_name=dir_name,
                         )
                     )
             elif config.message_type == "keyword":
