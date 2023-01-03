@@ -18,11 +18,6 @@ from nonebot.adapters.onebot.v11 import (
     MessageSegment,
     GroupMessageEvent
 )
-from nonebot.permission import SUPERUSER
-from nonebot.adapters.onebot.v11.permission import (
-    GROUP_ADMIN,
-    GROUP_OWNER,
-)
 
 from .utils import *
 from .depends import *
@@ -31,7 +26,6 @@ from .download import *
 
 data_path = Path() / "data" / "random"
 COMMANDS = []
-PERM_EDIT = GROUP_OWNER | GROUP_ADMIN | SUPERUSER
 
 async def bot_send(
     path:Path, 
@@ -56,6 +50,11 @@ async def bot_send(
         await bot.send(
             event=event,
             message=MessageSegment.record(file=f"file:///{path.resolve()}")
+        )
+    elif type == "video":
+        await bot.send(
+            event=event,
+            message=MessageSegment.video(file=f"file:///{path.resolve()}")
         )
 
 def get_files(
@@ -256,7 +255,7 @@ def create_matchers():
                         block=True,
                         priority=12,
                         rule=check_tome(config.is_tome),
-                        permission=PERM_EDIT,
+                        permission=check_modify(config.modify_admin_only),
                     ).append_handler(
                         insert_image_handler(
                             dir_name=dir_name,
@@ -269,7 +268,7 @@ def create_matchers():
                         block=True,
                         priority=12,
                         rule=check_tome(config.is_tome),
-                        permission=PERM_EDIT,
+                        permission=check_modify(config.modify_admin_only),
                     ).append_handler(
                         delete_image_handler(
                             dir_name=dir_name,

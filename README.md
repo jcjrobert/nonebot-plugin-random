@@ -113,6 +113,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 | "message" | 否 | ["随机`当前文件夹文件名`"] | 自定义命令，必须是列表，若"message_type"为"keyword"时只取第一项，为"regex"时必须为两项，第一项是正则表达式，第二项是匹配表达式的命令 |
 | "insert_message" | 否 | ["添加随机`当前文件夹文件名`"] | 自定义添加图片命令，必须是列表，仅"message_type"为"command"且"message_type"为"image"时有效 |
 | "delete_message" | 否 | ["删除随机`当前文件夹文件名`"] | 自定义删除图片命令，必须是列表，仅"message_type"为"command"且"message_type"为"image"时有效 |
+| "modify_admin_only" | 否 | false | 添加删除图片是否仅管理员可操作 |
 | "is_tome" | 否 | false | 使用抽取命令时是否需要at机器人 |
 | "output_prefix" | 否 | "" | 输出前缀，"draw_output"为"record"下该配置无效 |
 | "output_suffix" | 否 | "" | 输出后缀，"draw_output"为"record"下该配置无效 |
@@ -137,6 +138,7 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 |:-----:|:----:|
 | image | gif,png,jpg,jpeg |
 | record | mp3,wav,ogg |
+| video | mp4,avi,flv,wmv,mov,mpg,mpeg |
 
 仅在上表的文件后缀才会被纳入随机抽取的列表当中，时间原因，只确认了这些后缀，如果有其他可以用的后缀欢迎提出issue或PR
 
@@ -147,12 +149,16 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 - [ ] 菜单生成
 - [ ] 支持文件统计
 - [ ] 支持设置额外的文件路径进行文件抽取
-- [ ] 支持小视频抽取
 
 ## 📝 更新日志
 
 <details>
 <summary>展开/收起</summary>
+
+### 0.0.9
+
+- 添加删除图片默认所有人可以添加，要仅管理员需要单独设置
+- 支持视频抽取
 
 ### 0.0.8
 

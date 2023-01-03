@@ -1,6 +1,6 @@
 from typing import List
 
-DRAW_OUTPUT_TYPES = ["text", "image", "record"]
+DRAW_OUTPUT_TYPES = ["text", "image", "record", "video"]
 MESSAGE_TYPES = ["command", "keyword", "regex"]
 
 def is_list_str(l):
@@ -12,6 +12,7 @@ class RandomDetailConfig:
     message: List[str]
     insert_message: List[str]
     delete_message: List[str]
+    modify_admin_only: bool
     is_tome: bool
     output_prefix: str
     output_suffix: str
@@ -38,6 +39,8 @@ class RandomDetailConfig:
             self.delete_message = config_dict.get("delete_message")
             if not is_list_str(self.delete_message):
                 self.delete_message = [f"删除{msg}" for msg in self.message]
+
+            self.modify_admin_only = bool(config_dict.get("modify_admin_only"))
 
         self.is_tome = bool(config_dict.get("is_tome"))
 
