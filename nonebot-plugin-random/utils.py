@@ -4,7 +4,7 @@ def is_image_file(path:Path) -> bool:
     return path.suffix in [".gif",".png",".jpg",".jpeg"]
 
 def is_record_file(path:Path) -> bool:
-    return path.suffix in [".mp3",".wav",".ogg"]
+    return path.suffix in [".mp3",".wav",".ogg",".flac"]
 
 def is_video_file(path:Path) -> bool:
     return path.suffix in [".mp4",".avi",".flv",".wmv",".mov",".mpg",".mpeg"]
