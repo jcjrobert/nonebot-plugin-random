@@ -10,150 +10,185 @@
 
 _✨ Nonebot2 通用抽图/语音插件 ✨_
 
-
 <a href="./LICENSE">
     <img src="https://img.shields.io/github/license/jcjrobert/nonebot-plugin-random.svg" alt="license">
 </a>
 <a href="https://pypi.python.org/pypi/nonebot-plugin-random">
     <img src="https://img.shields.io/pypi/v/nonebot-plugin-random.svg" alt="pypi">
 </a>
-<img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="python">
-<a href="https://jq.qq.com/?_wv=1027&k=x4krZXBW">
-    <img src="https://img.shields.io/badge/QQ%E7%BE%A4-816538892-orange" alt="qq group">
-</a>
+<img src="https://img.shields.io/badge/python-3.9.5+-blue.svg" alt="python">
 
 </div>
 
 ## 📖 介绍
 
-如果只是想简单做个抽图或者抽语音的功能，不需要自己写多余的代码
+`nonebot-plugin-random` 是面向 NoneBot2 和 OneBot V11 的通用随机素材插件。只需在 `data/random` 中建立资源池并放入素材，即可提供文本、图片、语音或视频随机抽取功能。
 
-只需要安装本插件，在对应路径放好相关资源并配置好即可
+0.1.0 新增动态资源池管理、网页截图面板、群级与全局开关、群级冷却、跨群管理、资源池归档恢复和严格配置校验。资源池 Matcher 可以在运行期间创建、重建或注销，无需每次修改后重启机器人。
 
 ## 💿 安装
-插件仍在开发中，遇到问题还请务必提 issue。
 
-<details>
-<summary>使用 nb-cli 安装</summary>
-在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
+插件要求 Python 3.9.5 或更高版本。
 
-    nb plugin install nonebot-plugin-random
+使用 nb-cli：
 
-</details>
+```shell
+nb plugin install nonebot-plugin-random
+```
 
-<details>
-<summary>使用包管理器安装</summary>
-在 nonebot2 项目的插件目录下, 打开命令行, 根据你使用的包管理器, 输入相应的安装命令
+使用 pip：
 
-<details>
-<summary>pip</summary>
+```shell
+pip install nonebot-plugin-random
+```
 
-    pip install nonebot-plugin-random
-</details>
-<details>
-<summary>pdm</summary>
+然后在 NoneBot2 配置中加载插件，或在入口文件中调用：
 
-    pdm add nonebot-plugin-random
-</details>
-<details>
-<summary>poetry</summary>
+```python
+nonebot.load_plugin("nonebot-plugin-random")
+```
 
-    poetry add nonebot-plugin-random
-</details>
-<details>
-<summary>conda</summary>
+管理面板由 `nonebot-plugin-htmlrender` 渲染。首次部署时请按照该插件的说明准备 Playwright 浏览器运行环境；浏览器不可用时，随机池列表会回退为文本消息。
 
-    conda install nonebot-plugin-random
-</details>
+## 🎉 快速开始
 
-打开 nonebot2 项目的 `bot.py` 文件, 在其中写入
+机器人启动时会创建并扫描运行目录下的 `data/random/`。每个不以 `.` 或 `_` 开头的子目录都是一个资源池，例如：
 
-    nonebot.load_plugin('nonebot-plugin-random')
+```text
+data/
+├─ random/
+│  ├─ capoo/
+│  │  ├─ config.json
+│  │  ├─ happy.png
+│  │  └─ nested/
+│  │     └─ sleepy.webp
+│  └─ quote/
+│     ├─ config.json
+│     └─ hello.txt
+└─ random_archive/
+```
 
-</details>
+若 `capoo` 没有 `config.json`，插件会使用默认配置并注册 `随机capoo` 命令。已有的 `data/random/<资源池>` 目录可以继续使用，但新版配置采用严格校验；包含未知字段、错误类型或非法值的资源池会记录错误并跳过。
 
-<details>
-<summary>从 github 安装</summary>
-在 nonebot2 项目的插件目录下, 打开命令行, 输入以下命令克隆此储存库
+## ⚙️ 资源池配置
 
-    git clone https://github.com/jcjrobert/nonebot-plugin-random.git
+`config.json` 必须是 UTF-8 编码的 JSON 对象。
 
-打开 nonebot2 项目的 `bot.py` 文件, 在其中写入
+```json
+{
+    "display_name": "Capoo",
+    "draw_output": "image",
+    "draw_mode": "direct",
+    "cooldown_seconds": 10,
+    "message_type": "command",
+    "message": ["随机capoo"],
+    "insert_message": ["添加随机capoo"],
+    "delete_message": ["删除随机capoo"],
+    "modify_admin_only": true,
+    "is_tome": false,
+    "output_prefix": "",
+    "output_suffix": "",
+    "is_at_sender": false
+}
+```
 
-    nonebot.load_plugin('src.plugins.nonebot-plugin-random')
+| 配置项 | 默认值 | 说明 |
+|---|---|---|
+| `display_name` | 当前目录名 | 展示名称，最多 30 个字符 |
+| `draw_output` | `image` | 输出类型：`text`、`image`、`record` 或 `video` |
+| `draw_mode` | `direct` | `direct` 从资源池全部子目录递归抽取；`indirect` 先等概率选择一个一级子目录，再从其中抽取 |
+| `cooldown_seconds` | `10` | 每个群独立计算的非负整数冷却秒数 |
+| `message_type` | `command` | 匹配类型：`command`、`keyword` 或 `regex` |
+| `message` | `随机<资源池ID>` | 触发条件列表；正则模式必须为 `[表达式, 展示文本]` |
+| `insert_message` | 根据 `message` 生成 | 图片资源池的添加命令列表 |
+| `delete_message` | 根据 `message` 生成 | 图片资源池的删除命令列表 |
+| `modify_admin_only` | `true` | 是否只允许群主、群管理员和超级管理员增删图片 |
+| `is_tome` | `false` | 触发抽取时是否必须 @机器人 |
+| `output_prefix` | 空字符串 | 文本或图片输出前缀 |
+| `output_suffix` | 空字符串 | 文本或图片输出后缀 |
+| `is_at_sender` | `false` | 发送文本或图片时是否 @触发者 |
 
-</details>
+`output_prefix` 和 `output_suffix` 支持以下占位符：
 
-## 🎉 使用
+| 占位符 | 内容 |
+|---|---|
+| `{filename}` | 素材文件名，包含扩展名 |
+| `{filestem}` | 素材文件名，不包含扩展名 |
 
-机器人每次在重启时会创建（如果没有）并读取机器人运行目录下的 `data/random/` 文件夹
+资源池 ID 来自目录名，只允许小写字母、数字、下划线和连字符，长度为 1～32 个字符，并且必须以字母或数字开头。
 
-然后依次读取每个文件夹，一个文件夹就是一个抽取功能
+## 📦 支持的素材
 
-以随机capoo为例，你可以在 `data/random` 下创建capoo文件夹，然后把你喜欢的capoo图片放入文件夹
+| 输出类型 | 文件扩展名 |
+|---|---|
+| `text` | `.txt`，按 UTF-8 读取 |
+| `image` | `.gif`、`.png`、`.jpg`、`.jpeg`、`.webp` |
+| `record` | `.mp3`、`.wav`、`.ogg`、`.flac` |
+| `video` | `.mp4`、`.avi`、`.flv`、`.wmv`、`.mov`、`.mpg`、`.mpeg` |
 
-之后重启，使用命令 `随机capoo` 即可
+命令模式下可以在抽取命令后附加文件名前缀，插件会从文件名以该前缀开头的候选素材中随机选择。
 
-可以在群里动态添加图片，使用命令 `添加随机capoo` + 图片 + 图片名（可选） 即可，可以回复添加，仅管理员可以添加
+图片资源池支持在群聊中发送或回复图片进行添加、删除。添加时会验证图片内容，只接受 PNG、JPEG、GIF 和 WebP；删除会移除内容哈希相同的所有图片。
 
-删除图片则使用命令`删除随机capoo` + 图片即可，可以回复删除，仅管理员可以删除，会删除全部拥有同样hash的图片
+## 🎛️ 管理命令
 
-目前不能动态添加文件夹，需要手动添加并重启，这点请注意
+### 查看与群内开关
 
-### ⚙️ 配置
+| 命令 | 权限 | 说明 |
+|---|---|---|
+| `随机池列表` | 群成员 | 查看当前群可见的资源池截图面板 |
+| `开启随机池 <资源池ID...>` | 群主、群管理员或超级管理员 | 在当前群显式开启资源池，可覆盖全局禁用 |
+| `关闭随机池 <资源池ID...>` | 群主、群管理员或超级管理员 | 在当前群显式关闭资源池 |
 
-如果你有自定义命令的需求，你可以在当前文件夹，以随机capoo为例
+### 跨群与全局管理
 
-即`data/random/capoo`下添加config.json（UTF-8编码）文件，然后按照下表进行配置并重启
+| 命令 | 权限 | 说明 |
+|---|---|---|
+| `随机池列表 <群号>` | 超级管理员 | 查看指定群的完整资源池状态 |
+| `开启群随机池 <群号> <资源池ID...>` | 超级管理员 | 为指定群开启资源池 |
+| `关闭群随机池 <群号> <资源池ID...>` | 超级管理员 | 为指定群关闭资源池 |
+| `全局启用随机池 <资源池ID...>` | 超级管理员 | 恢复资源池的全局默认开启状态 |
+| `全局禁用随机池 <资源池ID...>` | 超级管理员 | 默认对所有群禁用资源池；群显式开启仍可覆盖 |
 
-| 配置项 | 必填 | 默认值 | 说明 |
-|:-----:|:----:|:----:|:----:|
-| "draw_output" | 否 | "image" | 抽取输出类型，有"image"/"record"/"video" |
-| "message_type" | 否 | "command" | 命令响应类型，"command"即on_command，"keyword"即on_keyword, "regex"即on_regex |
-| "message" | 否 | ["随机`当前文件夹文件名`"] | 自定义命令，必须是列表，若"message_type"为"keyword"时只取第一项，为"regex"时必须为两项，第一项是正则表达式，第二项是匹配表达式的命令 |
-| "insert_message" | 否 | ["添加随机`当前文件夹文件名`"] | 自定义添加图片命令，必须是列表，仅"message_type"为"command"且"message_type"为"image"时有效 |
-| "delete_message" | 否 | ["删除随机`当前文件夹文件名`"] | 自定义删除图片命令，同上 |
-| "modify_admin_only" | 否 | false | 添加删除图片是否仅管理员可操作 |
-| "is_tome" | 否 | false | 使用抽取命令时是否需要at机器人 |
-| "output_prefix" | 否 | "" | 输出前缀，"draw_output"仅为"image"时有效，下同 |
-| "output_suffix" | 否 | "" | 输出后缀 |
-| "is_at_sender" | 否 | false | 机器人发消息时是否需要at发送者 |
+群级和全局开关保存在 `data/random/group_switches.json`，写入过程使用临时文件替换，避免部分写入。
 
-如果想在输出前后缀出现文件名，请用{filestem}代表文件名，{filename}代表带后缀的文件名
+### 动态资源池管理
 
-### 指令表
+| 命令 | 权限 | 说明 |
+|---|---|---|
+| `新增随机池` | 超级管理员 | 通过交互式会话创建配置并立即注册 Matcher |
+| `编辑随机池 <资源池ID>` | 超级管理员 | 修改配置并立即重建 Matcher |
+| `删除随机池 <资源池ID>` | 超级管理员 | 确认后归档资源池并注销 Matcher |
+| `随机池归档列表` | 超级管理员 | 查看可恢复的归档 ID |
+| `恢复随机池 <归档ID>` | 超级管理员 | 恢复资源池并立即注册 Matcher |
 
-| 指令 | 说明 |
-|:-----:|:----:|
-| 随机XX | 指令可见上述配置|
-| 随机XX + 文件名 | 仅在"message_type"为"command"时生效，指定文件名字（搜索第一个开头为指定名称的文件，可包括后缀） |
-| 添加随机XX + 图片名 | 仅在"message_type"为"command"且"message_type"为"image"时生效，添加指令可自定义，可添加数张图片，空格隔开可以分别对图片命名，可以回复添加，图片名默认为当前时间的时间戳+自动判断图片的后缀 |
-| 删除随机XX | 仅在"message_type"为"command"且"message_type"为"image"时生效，删除指令可自定义，可删除数张图片，可以回复删除 |
+删除操作不会直接销毁素材，而是将整个资源池移动到 `data/random_archive/<时间戳>--<资源池ID>`。
 
-目前去除command前缀的手段非常暴力，直接遍历command并依次进行replace，进行自定义命令时需额外注意这点，如果有完美的解决方案欢迎提出issue或PR
+## 🔐 权限与状态优先级
 
-### 支持的文件后缀
+资源池状态按以下顺序解析：
 
-| draw_output | suffix |
-|:-----:|:----:|
-| image | gif,png,jpg,jpeg |
-| record | mp3,wav,ogg |
-| video | mp4,avi,flv,wmv,mov,mpg,mpeg |
+1. 群显式开启；
+2. 群显式关闭；
+3. 全局默认禁用；
+4. 默认开启。
 
-仅在上表的文件后缀才会被纳入随机抽取的列表当中，时间原因，只确认了这些后缀，如果有其他可以用的后缀欢迎提出issue或PR
-
-## 📝 TODO LIST
-
-- [ ] 对随机命令进行开关管理
-- [ ] 支持文本抽取
-- [ ] 菜单生成
-- [ ] 支持文件统计
-- [ ] 支持设置额外的文件路径进行文件抽取
+群级冷却按“群号 + 资源池 ID”分别计算，不同群互不影响。抽取发送失败时会释放本次冷却占用。
 
 ## 📝 更新日志
 
+### 0.1.0
+
+- 重构为动态资源池注册与管理架构。
+- 新增网页截图管理面板及文本降级响应。
+- 新增群级开关、全局默认状态和超级管理员跨群管理。
+- 新增群级冷却、文本抽取、直接/分层抽取模式。
+- 新增运行时创建、编辑、归档与恢复资源池。
+- 使用 Pydantic v2 严格校验配置，并增强图片内容与文件名安全校验。
+- 将图片增删权限默认值调整为仅管理员。
+
 <details>
-<summary>展开/收起</summary>
+<summary>历史版本（展开/收起）</summary>
 
 ### 0.0.9
 
@@ -202,18 +237,6 @@ _✨ Nonebot2 通用抽图/语音插件 ✨_
 
 - [noneplugin/nonebot-plugin-petpet](https://github.com/noneplugin/nonebot-plugin-petpet) Nonebot2 插件，用于制作摸头等头像相关表情包
 
-## 其他
-
-capoo资源欢迎加入交流群获取，日后可能会开放远程下载
-
 ## 📄 开源许可
 
-本项目使用[MIT](./LICENSE)许可证开源
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+本项目使用 [MIT License](./LICENSE) 开源。

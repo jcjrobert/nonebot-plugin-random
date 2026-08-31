@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
     long_description = f.read()
     setuptools.setup(
         name='nonebot-plugin-random',
-        version='0.0.9',
+        version='0.1.0',
         author='jcjrobert',
         author_email='jcjrobbie@gmail.com',
         keywords=["pip", "nonebot2", "nonebot", "random", "抽图"],
@@ -19,8 +19,20 @@ with open("README.md", "r", encoding="utf-8", errors="ignore") as f:
         license='MIT License',
         packages=setuptools.find_packages(),
         include_package_data=True,
+        package_data={
+            'nonebot-plugin-random': ['templates/*.html'],
+        },
+        python_requires='>=3.9.5',
         platforms="any",
         install_requires=[
-            'nonebot2>=2.0.0-beta.4', 'nonebot-adapter-onebot>=2.0.0-beta.4', 'httpx>=0.19.0', 
-        ]
+            'nonebot2>=2.3.2',
+            'nonebot-adapter-onebot>=2.4.6',
+            'httpx>=0.27.2',
+            'nonebot-plugin-htmlrender>=0.3.3',
+            'nonebot-plugin-alconna>=0.50.2',
+            'nonebot-plugin-waiter>=0.7.1',
+            'Pillow>=10.4.0',
+            'Jinja2>=3.1.6',
+            'pydantic>=2.10.2',
+        ],
     )

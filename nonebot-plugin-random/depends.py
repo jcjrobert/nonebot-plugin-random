@@ -6,6 +6,7 @@ from nonebot.adapters.onebot.v11.permission import (
 )
 from nonebot.adapters.onebot.v11 import MessageEvent
 
+
 def check_tome(is_tome: bool) -> Rule:
     def checker(event: MessageEvent) -> bool:
         if not is_tome:
@@ -14,10 +15,11 @@ def check_tome(is_tome: bool) -> Rule:
 
     return Rule(checker)
 
+
 def check_modify(modify_admin_only: bool) -> Permission:
     if modify_admin_only:
         return GROUP_OWNER | GROUP_ADMIN | SUPERUSER
-    
+
     def permission() -> bool:
         return True
 

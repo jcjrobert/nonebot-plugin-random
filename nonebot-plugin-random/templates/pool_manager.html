@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #eef1f7; color: #1f2937; font-family: "Microsoft YaHei", sans-serif; }
+      .page { width: 1000px; padding: 28px; }
+      .title { padding: 18px 24px; border-radius: 18px; background: #fff; box-shadow: 0 8px 24px #24324a18; }
+      .title h1 { margin: 0; font-size: 30px; }
+      .title p { margin: 8px 0 0; color: #6b7280; }
+      .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 20px; }
+      .pool { padding: 18px; border: 1px solid #dfe4ee; border-radius: 16px; background: #fff; box-shadow: 0 6px 18px #24324a12; }
+      .head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+      .name { font-size: 22px; font-weight: 700; }
+      .id { margin-top: 3px; color: #8b95a7; font: 13px Consolas, monospace; }
+      .switch { width: 46px; height: 26px; padding: 4px; border-radius: 20px; background: #cbd1dc; }
+      .switch.on { background: #7657e8; }
+      .knob { width: 18px; height: 18px; border-radius: 50%; background: white; }
+      .switch.on .knob { margin-left: 20px; }
+      .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+      .tag { padding: 5px 9px; border-radius: 10px; background: #f0edff; color: #6045c8; font-size: 13px; }
+      .status { background: #eaf8ef; color: #267a46; }
+      .status.disabled { background: #fff0f0; color: #b43e3e; }
+      .status.override { background: #fff5df; color: #9a641b; }
+      .command { margin-top: 14px; padding: 10px 12px; border-radius: 10px; background: #f7f8fb; color: #50596a; font-size: 14px; }
+      .empty { grid-column: 1 / -1; padding: 34px; border-radius: 16px; background: #fff; color: #7b8494; text-align: center; }
+      .help { margin-top: 20px; padding: 20px; border-radius: 16px; background: #fff; box-shadow: 0 6px 18px #24324a12; }
+      .help h2 { margin: 0 0 15px; font-size: 21px; }
+      .help-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .help-group { padding: 14px; border: 1px solid #e1e5ee; border-radius: 12px; background: #fafbfe; }
+      .help-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+      .help-title { font-weight: 700; }
+      .permission { padding: 4px 7px; border-radius: 8px; background: #eeeaff; color: #6045c8; font-size: 11px; }
+      .help-group:last-child .permission { background: #fff0f0; color: #c24141; }
+      .help-command { margin-top: 7px; color: #50596a; font: 13px Consolas, "Microsoft YaHei", monospace; }
+      .footer { margin-top: 14px; color: #687386; font-size: 13px; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="title">
+        <h1>{{ title }}</h1>
+        {% if detailed %}
+        <p>资源池开关仅影响当前群；多个资源池 ID 使用空格分隔。</p>
+        {% else %}
+        <p>以下是当前群已经启用的随机功能。</p>
+        {% endif %}
+      </section>
+      <section class="grid">
+        {% if not pools %}
+        <div class="empty">{% if detailed %}暂无随机池{% else %}当前群暂无已启用的随机功能{% endif %}</div>
+        {% endif %}
+        {% for pool in pools %}
+        <article class="pool">
+          <div class="head">
+            <div>
+              <div class="name">{{ pool.display_name }}</div>
+              {% if detailed %}<div class="id">{{ pool.pool_id }}</div>{% endif %}
+            </div>
+            {% if detailed %}
+            <div class="switch {% if pool.enabled %}on{% endif %}"><div class="knob"></div></div>
+            {% endif %}
+          </div>
+          <div class="tags">
+            <span class="tag">{{ pool.output_text }}</span>
+            {% if detailed %}
+            <span class="tag">{{ pool.mode_text }}</span>
+            <span class="tag">{{ pool.file_count }} 个素材</span>
+            <span class="tag">CD {{ pool.cooldown_seconds }}s</span>
+            <span class="tag status {{ pool.status_tone }}">{{ pool.status_text }}</span>
+            {% endif %}
+          </div>
+          <div class="command">{{ pool.command }}</div>
+        </article>
+        {% endfor %}
+      </section>
+      {% if help_sections %}
+      <section class="help">
+        <h2>相关指令</h2>
+        <div class="help-grid">
+          {% for section in help_sections %}
+          <div class="help-group">
+            <div class="help-head">
+              <span class="help-title">{{ section.title }}</span>
+              <span class="permission">{{ section.permission }}</span>
+            </div>
+            {% for command in section.commands %}
+            <div class="help-command">{{ command }}</div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      <div class="footer">全局禁用是默认状态，群内显式开启仍然优先；资源池生命周期管理仅限超级管理员。</div>
+      {% endif %}
+    </main>
+  </body>
+</html>
